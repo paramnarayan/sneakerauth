@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const Layout = ({ children, activeTab, setActiveTab }) => {
   const [apiOnline, setApiOnline] = useState(false);
-  const API_URL = "http://localhost:5001";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
 
   useEffect(() => {
     const checkHealth = async () => {
@@ -126,7 +126,7 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
             <div className="mb-8 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-center gap-3 backdrop-blur-md hw-accel animate-in slide-in-from-top-2">
               <span className="text-rose-400 animate-pulse text-xl">⚠️</span>
               <p className="text-sm font-medium text-rose-200">
-                Connection to ORB API lost at <code className="bg-obsidian-900 px-2 py-1 rounded border border-rose-500/30 text-rose-300">http://localhost:5001</code>. Start the backend server.
+                Connection to ORB API lost at <code className="bg-obsidian-900 px-2 py-1 rounded border border-rose-500/30 text-rose-300">{API_URL}</code>. Start the backend server.
               </p>
             </div>
           )}
