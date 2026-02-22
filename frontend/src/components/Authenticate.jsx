@@ -24,7 +24,8 @@ const Authenticate = () => {
     formData.append("batch_id", batchId);
 
     try {
-      const res = await fetch("http://localhost:5001/authenticate", {
+      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5001";
+      const res = await fetch(`${API_BASE}/authenticate`, {
         method: "POST",
         body: formData,
       });
