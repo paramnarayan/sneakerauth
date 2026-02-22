@@ -29,6 +29,15 @@ Infinite horizontal scalability
 Cryptographic integrity of all batch members
 Minimal on-chain storage footprint
 Only the Merkle Root is stored on-chain, while proofs are generated off-chain.
+# Computer Vision Authentication
+During assessment, the backend executes an ORB (Oriented FAST and Rotated BRIEF) feature-matching algorithm using OpenCV.
+Process:
+A canonical reference image of an authentic sneaker is stored securely.
+The uploaded test image is converted into raw byte arrays.
+ORB extracts structural keypoints and descriptors from both images.
+A feature-matching confidence score is computed.
+If structural similarity exceeds 51%, the sneaker is classified as authentic.
+This approach ensures structural verification rather than relying on superficial visual cues.
 # ECDSA-Based Ownership Control
 Ownership transfers use Ethereum’s native cryptographic mechanism:
 The smart contract validates transactions using ECDSA signatures.
