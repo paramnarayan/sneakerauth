@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Header from './Header';
+
 const Authenticate = () => {
   const [refFile, setRefFile] = useState(null);
   const [testFile, setTestFile] = useState(null);
@@ -7,6 +8,7 @@ const Authenticate = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+
   const handleAuthenticate = async () => {
     if (!refFile || !testFile) {
       setError("Please upload both a reference image and a test image.");
@@ -15,10 +17,12 @@ const Authenticate = () => {
     setError('');
     setLoading(true);
     setResult(null);
+
     const formData = new FormData();
     formData.append("reference_image", refFile);
     formData.append("test_image", testFile);
     formData.append("batch_id", batchId);
+
     try {
       const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5001";
       const res = await fetch(`${API_BASE}/authenticate`, {
@@ -37,16 +41,20 @@ const Authenticate = () => {
       setLoading(false);
     }
   };
+
   return (
     <div className="animate-fade-in-up w-full max-w-4xl relative z-10">
       <Header 
         title="Authenticate Sneaker" 
         subtitle="Upload a reference image of the authenticated sneaker and a test image to verify. Our ORB model compares the two, and if genuine, the SHA256 fingerprint is permanently recorded on the Sepolia blockchain."
       />
+
       <div className="glass-card p-6 md:p-10 mb-8 relative z-10">
-        {}
+        
+        {/* Decorative cyber corner accents */}
         <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyber-cyan/40 rounded-tl-xl"></div>
         <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-luxury-gold/40 rounded-br-xl"></div>
+
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
           <div className="lg:col-span-2 space-y-4">
             <div>
@@ -72,6 +80,7 @@ const Authenticate = () => {
               </div>
             )}
           </div>
+
           <div className="lg:col-span-2 space-y-4">
             <div>
               <label className="block text-xs font-bold text-cyber-cyan uppercase tracking-widest mb-1">📁 Test Image</label>
@@ -91,13 +100,14 @@ const Authenticate = () => {
             </div>
             {testFile && (
               <div className="mt-4 rounded-xl overflow-hidden border border-cyber-cyan/30 relative group hw-accel shadow-[0_0_15px_rgba(0,240,255,0.2)]">
-                {}
+                {/* Cyber scanline effect on image */}
                 <div className="absolute inset-0 bg-cyber-cyan/10 z-10 pointer-events-none" />
                 <div className="absolute top-0 left-0 w-full h-1 bg-cyber-cyan/50 shadow-[0_0_10px_#00F0FF] z-20 animate-scanline pointer-events-none" />
                 <img src={URL.createObjectURL(testFile)} alt="Test" className="w-full h-48 object-cover opacity-90" />
               </div>
             )}
           </div>
+
           <div className="lg:col-span-1 space-y-3">
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest">Batch ID</label>
             <input 
@@ -108,6 +118,7 @@ const Authenticate = () => {
             />
           </div>
         </div>
+
         <button 
           onClick={handleAuthenticate}
           disabled={loading}
@@ -123,23 +134,27 @@ const Authenticate = () => {
             </span>
           ) : 'RUN AUTHENTICITY CHECK'}
         </button>
+
         {error && (
           <div className="mt-8 p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 font-medium text-sm hw-accel animate-in slide-in-from-top-2">
             ⚠️ {error}
           </div>
         )}
       </div>
+
       {result && (
         <div className="animate-fade-in-up flex flex-col gap-6 z-10 relative hw-accel">
           {result.authentic ? (
             <div className="bg-obsidian-800/90 backdrop-blur-xl border border-luxury-gold/50 rounded-2xl p-8 shadow-neon-gold relative overflow-hidden">
-              {}
+              {/* Luxury holographic glow */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-luxury-gold/10 rounded-full blur-[80px] -z-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyber-cyan/5 rounded-full blur-[60px] -z-10 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
+              
               <h4 className="text-2xl font-bold text-luxury-light flex items-center gap-4 mb-10 tracking-[0.1em] uppercase">
                 <span className="bg-luxury-gold/20 p-2.5 rounded-full border border-luxury-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.3)]">✨</span> 
                 SNEAKER AUTHENTICATED
               </h4>
+              
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                 <div className="p-6 bg-obsidian-900/80 rounded-xl border border-white/5 relative overflow-hidden group hover:border-luxury-gold/30 transition-colors">
                   <div className="absolute inset-0 bg-gradient-to-br from-luxury-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -156,6 +171,7 @@ const Authenticate = () => {
                   <p className="text-2xl font-bold text-gray-300 tracking-wider">ORB Match</p>
                 </div>
               </div>
+
               <div className="mb-8">
                 <p className="text-[10px] font-bold text-luxury-gold mb-3 uppercase tracking-[0.2em] flex items-center gap-2">
                   <span className="w-1 h-1 bg-luxury-gold rounded-full animate-pulse-glow"></span>
@@ -166,6 +182,7 @@ const Authenticate = () => {
                   {result.serial}
                 </div>
               </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-5 bg-obsidian-900/50 border border-white/5 rounded-xl hover:border-cyber-cyan/20 transition-colors">
                   <p className="text-[9px] font-bold text-cyber-cyan mb-2 uppercase tracking-[0.2em]">Register TX Hash</p>
@@ -195,4 +212,5 @@ const Authenticate = () => {
     </div>
   );
 };
+
 export default Authenticate;

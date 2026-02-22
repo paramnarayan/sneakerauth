@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+
 const Layout = ({ children, activeTab, setActiveTab }) => {
   const [apiOnline, setApiOnline] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
+
   useEffect(() => {
     const checkHealth = async () => {
       try {
@@ -15,17 +17,22 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
     const intervalId = setInterval(checkHealth, 10000);
     return () => clearInterval(intervalId);
   }, []);
+
   return (
     <div className="flex h-screen bg-obsidian-900 overflow-hidden relative selection:bg-cyber-cyan/30">
-      {}
+      
+      {/* Absolute cyber grid background */}
       <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none hw-accel"></div>
-      {}
+
+      {/* Cyber ambient glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-cyber-cyan/5 blur-[120px] rounded-full pointer-events-none hw-accel"></div>
-      {}
+
+      {/* Sidebar Dashboard Navigation */}
       <aside className="w-72 bg-obsidian-800/90 backdrop-blur-2xl border-r border-white/5 flex flex-col z-20 shadow-2xl relative hw-accel">
-        {}
+        {/* Glowing border accent on the right edge */}
         <div className="absolute top-0 right-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-luxury-gold/30 to-transparent"></div>
-        {}
+
+        {/* Brand Header */}
         <div className="p-8 border-b border-white/5">
           <div className="flex items-center gap-4 group">
             <div className="relative">
@@ -40,7 +47,8 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
             </div>
           </div>
         </div>
-        {}
+
+        {/* Navigation Links */}
         <nav className="flex-1 px-4 py-8 space-y-8 overflow-y-auto">
           <div>
             <p className="px-5 text-[10px] font-bold text-gray-600 uppercase tracking-[0.3em] mb-4">Core Actions</p>
@@ -65,6 +73,7 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
               </li>
             </ul>
           </div>
+
           <div>
              <p className="px-5 text-[10px] font-bold text-gray-600 uppercase tracking-[0.3em] mb-4">Administration</p>
              <ul className="space-y-2">
@@ -80,7 +89,8 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
              </ul>
           </div>
         </nav>
-        {}
+
+        {/* Network Status Panel firmly at bottom */}
         <div className="p-6 border-t border-white/5 bg-obsidian-900/50 backdrop-blur-md">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[10px] font-bold text-gray-600 uppercase tracking-[0.3em]">Network Status</h3>
@@ -89,6 +99,7 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
               <span className={`relative inline-flex rounded-full h-3 w-3 ${apiOnline ? 'bg-cyber-cyan' : 'bg-rose-500'}`}></span>
             </span>
           </div>
+          
           <div className="space-y-3">
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-500 text-xs">API Link</span>
@@ -107,7 +118,8 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
           </div>
         </div>
       </aside>
-      {}
+
+      {/* Main Content Area */}
       <main className="flex-1 flex flex-col relative overflow-y-auto">
         <div className="flex-1 max-w-5xl mx-auto w-full p-8 md:p-12 z-10 relative">
           {!apiOnline && (
@@ -124,4 +136,5 @@ const Layout = ({ children, activeTab, setActiveTab }) => {
     </div>
   );
 };
+
 export default Layout;

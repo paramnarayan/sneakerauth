@@ -1,7 +1,8 @@
+/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
-    "./src*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -10,10 +11,10 @@ export default {
       },
       colors: {
         obsidian: {
-          900: '#030303',   
-          800: '#0A0A0A',   
-          700: '#141414',   
-          600: '#1F1F1F',   
+          900: '#030303',   // Pure void
+          800: '#0A0A0A',   // Deep space
+          700: '#141414',   // Cards
+          600: '#1F1F1F',   // Elevated cards/borders
         },
         cyber: {
           cyan: '#00F0FF',

@@ -1,4 +1,5 @@
 import React from 'react';
+
 const Header = ({ title, subtitle }) => {
   return (
     <header className="mb-10 w-full hw-accel animate-in slide-in-from-top-6 duration-700">
@@ -12,4 +13,5 @@ const Header = ({ title, subtitle }) => {
     </header>
   );
 };
+
 export default Header;
