@@ -11,14 +11,12 @@ from dotenv import load_dotenv
 from backend.merkle_utils import build_tree, get_proof
 from model import authenticate_sneaker as ml_authenticate
 
-# ── Load config relative to this file, not the cwd ──────────────────────────
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
 app = Flask(__name__)
 CORS(app)
 
-# ── Blockchain setup ────────────────────────────────────────────────────────
 rpc_url = os.getenv("RPC_URL")
 private_key = os.getenv("PRIVATE_KEY")
 contract_addr = os.getenv("CONTRACT_ADDRESS")
@@ -39,41 +37,12 @@ with open(BASE_DIR / "abi.json") as f:
 contract = w3.eth.contract(address=contract_address, abi=abi)
 
 
-# ── Helper ──────────────────────────────────────────────────────────────────
 def _build_txn(fn_call, gas=1_200_000, nonce=None):
-    """Build, sign, and send a transaction; return the tx hash hex string."""
-    if nonce is None:
-        nonce = w3.eth.get_transaction_count(account.address)
-    txn = fn_call.build_transaction({
-        "chainId": 11155111,
-        "from": account.address,
-        "nonce": nonce,
-        "gas": gas,
-        "maxFeePerGas": w3.to_wei(25, "gwei"),
-        "maxPriorityFeePerGas": w3.to_wei(2, "gwei"),
-    })
-    signed = w3.eth.account.sign_transaction(txn, private_key)
-    tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
-    return tx_hash.hex()
-
-
-# ── Routes ──────────────────────────────────────────────────────────────────
-
-@app.route("/health", methods=["GET"])
-def health():
-    """Quick liveness check."""
     return jsonify({"status": "ok", "connected": "unknown"})
 
 
 @app.route("/authenticate", methods=["POST"])
 def authenticate():
-    """
-    Full pipeline: upload images → ORB model → SHA256 serial → blockchain.
-    Expects multipart/form-data with:
-      - reference_image : file (the canonical authentic sneaker image)
-      - test_image      : file (the sneaker being verified)
-      - batch_id        : int  (the batch ID to register under)
-    """
     try:
         if "reference_image" not in request.files or "test_image" not in request.files:
             return jsonify({"error": "Both 'reference_image' and 'test_image' files are required."}), 400
@@ -87,7 +56,6 @@ def authenticate():
         ref_bytes = request.files["reference_image"].read()
         test_bytes = request.files["test_image"].read()
 
-        # ── Step 1: Run the ORB ML model ─────────────────────────────────────
         is_authentic, confidence = ml_authenticate(ref_bytes, test_bytes)
 
         if not is_authentic:
@@ -98,15 +66,12 @@ def authenticate():
                 "message": "ORB feature matching failed the authenticity threshold."
             })
 
-        # ── Step 2: Derive serial from image SHA256 hash ──────────────────────
         serial = hashlib.sha256(test_bytes).hexdigest()
 
-        # ── Step 3: Register batch on-chain ───────────────────────────────────
         leaves = [hashlib.sha256(serial.encode()).digest()]
         tree   = build_tree(leaves)
         root   = tree[-1][0]
 
-        # Fetch nonce once and increment manually to avoid nonce collision
         base_nonce = w3.eth.get_transaction_count(account.address)
 
         register_tx = _build_txn(
@@ -114,9 +79,8 @@ def authenticate():
             nonce=base_nonce
         )
 
-        # ── Step 4: Verify product on-chain ───────────────────────────────────
         product_hash = hashlib.sha256(serial.encode()).digest()
-        proof        = get_proof(tree, 0)   # single-leaf tree, empty proof
+        proof        = get_proof(tree, 0)
         score_int    = min(int(confidence * 10000), 10000)
 
         verify_tx = _build_txn(
@@ -170,7 +134,7 @@ def verify():
         serial = data.get("serial")
         batch_id = data.get("batch_id")
         batch_serials = data.get("batch_serials")
-        score = data.get("score", 10000)  # accept from request; default 10000
+        score = data.get("score", 10000)
 
         if not serial or batch_id is None or not batch_serials:
             return jsonify({
